@@ -10,6 +10,7 @@ public class SharedHandler {
     private SharedPreferences mSharedPreferences;
 
     private static SharedHandler sSharedHandler;
+    private static String sName;
 
     public SharedHandler(Context context, String name) {
         mSharedPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE);
@@ -20,8 +21,9 @@ public class SharedHandler {
     }
 
     public static void init(Context context, String name) {
-        if (sSharedHandler == null) {
+        if (sSharedHandler == null || !name.equals(sName)) {
             sSharedHandler = new SharedHandler(context, name);
+            sName = name;
         }
     }
 

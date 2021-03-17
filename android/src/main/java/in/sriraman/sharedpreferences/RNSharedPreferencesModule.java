@@ -25,7 +25,7 @@ public class RNSharedPreferencesModule extends ReactContextBaseJavaModule {
 	private ArrayList<BluetoothDevice> bt_device_list = null;
 	private boolean bt_scanning = false;
 	private boolean is_watch = false;
-	private String shared_name = "wit_player_shared_preferences";
+	private String shared_name = "react_native_shared_preferences";
 
 	private BroadcastReceiver bt_info_receiver = null;
 
@@ -39,7 +39,7 @@ public class RNSharedPreferencesModule extends ReactContextBaseJavaModule {
 
 
 	private void initSharedHandler() {
-		SharedHandler.init(getReactApplicationContext(), shared_name);		
+		SharedHandler.init(getReactApplicationContext(), shared_name);
 	}
 
 	public RNSharedPreferencesModule(ReactApplicationContext reactContext) {
@@ -48,7 +48,7 @@ public class RNSharedPreferencesModule extends ReactContextBaseJavaModule {
 
 	@Override
 	public String getName() {
-		return "SharedPreferences";
+		return shared_name;
 	}
 
 	@ReactMethod
@@ -115,7 +115,7 @@ public class RNSharedPreferencesModule extends ReactContextBaseJavaModule {
 	   String[][] value = SharedDataProvider.getMultiSharedValues(keys);
 	   successCallback.invoke(value);
 
-	   }	
+	   }
 
 	 */
 
