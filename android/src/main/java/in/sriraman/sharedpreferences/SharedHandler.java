@@ -10,7 +10,7 @@ public class SharedHandler {
     private SharedPreferences mSharedPreferences;
 
     private static SharedHandler sSharedHandler;
-    private static String sName;
+    private static String sName = "Preferences";
 
     public SharedHandler(Context context, String name) {
         mSharedPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE);
