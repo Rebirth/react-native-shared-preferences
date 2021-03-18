@@ -48,7 +48,7 @@ public class RNSharedPreferencesModule extends ReactContextBaseJavaModule {
 
 	@Override
 	public String getName() {
-		return shared_name;
+		return "SharedPreferences";
 	}
 
 	@ReactMethod
