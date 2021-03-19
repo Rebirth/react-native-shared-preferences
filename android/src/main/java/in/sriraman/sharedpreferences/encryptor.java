@@ -52,20 +52,23 @@ public class Encryptor {
     }
 
     public static Encryptor init(String keystore_string, String key_alias) {
-      if (mEncryptor == null) {
-        mEncryptor = new Encryptor(keystore_string, key_alias);
+      try {
+        if (mEncryptor == null) {
+          mEncryptor = new Encryptor(keystore_string, key_alias);
+        }
+
+        return mEncryptor;
+      } catch (Exceception e) {
+        return null;
       }
 
-      return mEncryptor;
     }
 
     public String encrypt(String toEncrypt) {
-
-
         try {
             // don't encrypt without a key
             if (iv_key == null || mEncryptor == null) {
-                return null;
+                return toEncrypt;
             }
 
             Cipher c = Cipher.getInstance(AES_MODE);
@@ -81,7 +84,7 @@ public class Encryptor {
         try {
             // can't decrypt without a key
             if (iv_key == null || mEncryptor == null) {
-                return null;
+                return toDecrypt;
             }
 
             Cipher c = Cipher.getInstance(AES_MODE);
@@ -147,6 +150,7 @@ public class Encryptor {
 
     public Encryptor setIVKey(String iv_key) {
         this.iv_key = iv_key;
+        return this;
     }
 
     private void generateKey() throws KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
