@@ -58,7 +58,7 @@ public class Encryptor {
         }
 
         return mEncryptor;
-      } catch (Exceception e) {
+      } catch (Exception e) {
         return null;
       }
 

@@ -67,6 +67,8 @@ public class RNSharedPreferencesModule extends ReactContextBaseJavaModule {
 
 	@ReactMethod
 	public void enableEncryption(String keystore, String key_alias, String key) {
+		this.encrypted = true;
+		
 		this.keystore = keystore;
 		this.key_alias = key_alias;
 		this.key = key;
