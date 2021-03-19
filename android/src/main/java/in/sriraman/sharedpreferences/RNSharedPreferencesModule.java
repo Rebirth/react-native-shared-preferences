@@ -113,12 +113,16 @@ public class RNSharedPreferencesModule extends ReactContextBaseJavaModule {
 
 	@ReactMethod
 	public void decrypt(String value, String keystore, String key_alias, String iv_key, Callback callback) {
-		Encryptor encryptor = new Encryptor(keystore, key_alias);
-		encryptor.setIVKey(iv_key);
+		try {
+			Encryptor encryptor = new Encryptor(keystore, key_alias);
+			encryptor.setIVKey(iv_key);
 
-		String decrypted = encryptor.decryptString(value);
+			String decrypted = encryptor.decryptString(value);
 
-		callback.invoke(decrypted);
+			callback.invoke(decrypted);
+		} catch (Exception e) {
+			callback.invoke(value);
+		}
 	}
 
 
