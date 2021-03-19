@@ -157,7 +157,7 @@ public class Encryptor {
         }
 
         if (!keyStore.containsAlias(key_alias)) {
-            KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, keystore);
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, keystore_string);
             keyGenerator.init(new KeyGenParameterSpec.Builder(key_alias, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT).setBlockModes(KeyProperties.BLOCK_MODE_GCM).setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE).setRandomizedEncryptionRequired(false).build());
             SecretKey secretKey = keyGenerator.generateKey();
         }
@@ -165,7 +165,7 @@ public class Encryptor {
 
     private byte[] GenerateIV() throws NoSuchAlgorithmException {
         MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-        messageDigest.update(key.getBytes());
+        messageDigest.update(iv_key.getBytes());
 
         return Arrays.copyOfRange(messageDigest.digest(), 0, 12);
     }
