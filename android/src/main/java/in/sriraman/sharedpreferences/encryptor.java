@@ -5,7 +5,6 @@ import android.os.Build;
 import android.os.OperationCanceledException;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
-import android.support.annotation.RequiresApi;
 import android.util.Base64;
 
 import java.io.IOException;
@@ -33,7 +32,7 @@ public class Encryptor {
     private KeyStore keyStore;
     private Context context;
     private ApplicationHelper helper;
-    private static Encryptor mEncryptor
+    private static Encryptor mEncryptor;
 
     public Encryptor(String keystore_string, String key_alias) throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, NoSuchProviderException, InvalidAlgorithmParameterException {
         if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.M) {
@@ -55,19 +54,18 @@ public class Encryptor {
 
     public static Encryptor init(String keystore_string, String key_alias) {
       if (mEncryptor == null) {
-        mEncryptor = new Encryptor(keystore_string, key_alias)
+        mEncryptor = new Encryptor(keystore_string, key_alias);
       }
 
       return mEncryptor;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public String encrypt(String toEncrypt) {
 
 
         try {
             // don't encrypt without a key
-            if (key == null || mEncryptor == null) {
+            if (iv_key == null || mEncryptor == null) {
                 return null;
             }
 
@@ -80,11 +78,10 @@ public class Encryptor {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public String decryptString(String toDecrypt) {
         try {
             // can't decrypt without a key
-            if (key == null || mEncryptor == null) {
+            if (iv_key == null || mEncryptor == null) {
                 return null;
             }
 
@@ -101,14 +98,12 @@ public class Encryptor {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public String encrypt(int toEncrypt) {
-        return Encryptor.encrypt(String.valueOf(toEncrypt));
+        return encrypt(String.valueOf(toEncrypt));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public int decryptInt(String toDecrypt,int fallback) {
-        String decrypted = Encryptor.decryptString(toDecrypt);
+        String decrypted = decryptString(toDecrypt);
 
         if (decrypted != null) {
             return Integer.valueOf(decrypted);
@@ -117,14 +112,12 @@ public class Encryptor {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public String encrypt(float toEncrypt) {
-        return Encryptor.encrypt(String.valueOf(toEncrypt));
+        return encrypt(String.valueOf(toEncrypt));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public float decryptFloat(String toDecrypt,float fallback) {
-        String decrypted = Encryptor.decryptString(toDecrypt);
+        String decrypted = decryptString(toDecrypt);
 
         if (decrypted != null) {
             return Float.valueOf(decrypted);
@@ -133,14 +126,12 @@ public class Encryptor {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public String encrypt(long toEncrypt) {
-        return Encryptor.encrypt(String.valueOf(toEncrypt));
+        return encrypt(String.valueOf(toEncrypt));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public long decryptLong(String toDecrypt,long fallback) {
-        String decrypted = Encryptor.decryptString(toDecrypt);
+        String decrypted = decryptString(toDecrypt);
 
         if (decrypted != null) {
             return Long.valueOf(decrypted);

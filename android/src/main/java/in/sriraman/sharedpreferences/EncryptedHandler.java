@@ -18,7 +18,7 @@ public class EncryptedHandler {
 
     public EncryptedHandler(Context context, String name, String keystore, String key_alias, String iv_key) {
         mEncryptedPreferences = context.getSharedPreferences(name, Context.MODE_PRIVATE);
-        this.encryptor = Encryptor.init(keystore, key_alias).setIVKey(iv_key)
+        this.encryptor = Encryptor.init(keystore, key_alias).setIVKey(iv_key);
     }
 
     public static EncryptedHandler getInstance() {
@@ -29,30 +29,30 @@ public class EncryptedHandler {
         if (mEncryptedHandler == null || !name.equals(sName) || !iv_key.equals(mIVKey)) {
             mEncryptedHandler = new EncryptedHandler(context, name, keystore, key_alias, iv_key);
             sName = name;
-            mIVKey = iv_key
+            mIVKey = iv_key;
         }
     }
 
     public void putString(String key, String value) {
         SharedPreferences.Editor editor = mEncryptedPreferences.edit();
-        String encryptedValue = encryptor.encrypt(value)
+        String encryptedValue = encryptor.encrypt(value);
         if (encryptedValue != null) {
             encryptedEditor.putString(key, encryptedValue).commit();
         }
     }
 
     public String getString(String key) {
-      String encryptedVal = encryptedPreferences.getString(key, "");
+      String encryptedVal = mEncryptedPreferences.getString(key, "");
       return encryptor.decryptString(encryptedVal);
     }
 
     public Float getFloat(String key) {
-      String encryptedVal = encryptedPreferences.getString(key, null);
+      String encryptedVal = mEncryptedPreferences.getString(key, null);
       return encryptor.decryptFloat(encryptedVal, 0);
     }
 
     public Long getLong(String key) {
-      String encryptedVal = encryptedPreferences.getString(key, null);
+      String encryptedVal = mEncryptedPreferences.getString(key, null);
       return encryptor.decryptLong(encryptedVal, 0);
     }
 
@@ -61,7 +61,7 @@ public class EncryptedHandler {
     }
 
     public Integer getInt(String key) {
-      String encryptedVal = encryptedPreferences.getString(key, null);
+      String encryptedVal = mEncryptedPreferences.getString(key, null);
       return encryptor.decryptInt(encryptedVal, 0);
     }
 
