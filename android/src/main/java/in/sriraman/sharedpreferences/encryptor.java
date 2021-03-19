@@ -67,12 +67,12 @@ public class Encryptor {
     public String encrypt(String toEncrypt) {
         try {
             // don't encrypt without a key
-            if (iv_key == null || mEncryptor == null) {
+            if (iv_key == null) {
                 return toEncrypt;
             }
 
             Cipher c = Cipher.getInstance(AES_MODE);
-            c.init(Cipher.ENCRYPT_MODE, mEncryptor.getKey(), new GCMParameterSpec(128, mEncryptor.GenerateIV()));
+            c.init(Cipher.ENCRYPT_MODE, getKey(), new GCMParameterSpec(128, GenerateIV()));
             byte[] encodedBytes = c.doFinal(toEncrypt.getBytes());
             return Base64.encodeToString(encodedBytes, Base64.DEFAULT);
         } catch (Exception e) {
@@ -83,12 +83,12 @@ public class Encryptor {
     public String decryptString(String toDecrypt) {
         try {
             // can't decrypt without a key
-            if (iv_key == null || mEncryptor == null) {
+            if (iv_key == null) {
                 return toDecrypt;
             }
 
             Cipher c = Cipher.getInstance(AES_MODE);
-            c.init(Cipher.DECRYPT_MODE, mEncryptor.getKey(), new GCMParameterSpec(128, mEncryptor.GenerateIV()));
+            c.init(Cipher.DECRYPT_MODE, getKey(), new GCMParameterSpec(128, GenerateIV()));
 
             byte[] encrypted_bytes = Base64.decode(toDecrypt, Base64.DEFAULT);
             byte[] decodedBytes = c.doFinal(encrypted_bytes);
