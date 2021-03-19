@@ -85,8 +85,13 @@ public class RNSharedPreferencesModule extends ReactContextBaseJavaModule {
 	@ReactMethod
 	public void setItem(String key, String value) {
 
-		initSharedHandler();
-		SharedDataProvider.putSharedValue(key,value);
+		if (encrypted && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+			initEncryptedHandler();
+			EncryptedHandler.getInstance().putString(key, value);
+		} else {
+			initSharedHandler();
+			SharedDataProvider.putSharedValue(key,value);
+		}
 
 	}
 
@@ -95,13 +100,13 @@ public class RNSharedPreferencesModule extends ReactContextBaseJavaModule {
 
 		if (encrypted && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
 			initEncryptedHandler();
+			String value = EncryptedHandler.getInstance().getString(key);
+			successCallback.invoke(value);
 		} else {
 			initSharedHandler();
+			String value = SharedDataProvider.getSharedValue(key);
+			successCallback.invoke(value);
 		}
-
-		String value = SharedDataProvider.getSharedValue(key);
-		successCallback.invoke(value);
-
 	}
 
 

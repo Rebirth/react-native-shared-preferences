@@ -33,8 +33,9 @@ public class EncryptedHandler {
         }
     }
 
-    public void putExtra(String key, Object value) {
+    public void putString(String key, String value) {
         SharedPreferences.Editor editor = mEncryptedPreferences.edit();
+        String encryptedValue = encryptor.encrypt(value)
         if (encryptedValue != null) {
             encryptedEditor.putString(key, encryptedValue).commit();
         }
