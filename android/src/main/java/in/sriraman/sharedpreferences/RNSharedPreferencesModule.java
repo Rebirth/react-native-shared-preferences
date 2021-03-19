@@ -27,6 +27,11 @@ public class RNSharedPreferencesModule extends ReactContextBaseJavaModule {
 	private boolean is_watch = false;
 	private String shared_name = "react_native_shared_preferences";
 
+	private String keystore;
+	private String key_alias;
+	private String key;
+	private boolean encrypted = false;
+
 	private BroadcastReceiver bt_info_receiver = null;
 
 
@@ -40,6 +45,10 @@ public class RNSharedPreferencesModule extends ReactContextBaseJavaModule {
 
 	private void initSharedHandler() {
 		SharedHandler.init(getReactApplicationContext(), shared_name);
+	}
+
+	private void initEncryptedHandler() {
+		EncryptedHandler.init(getReactApplicationContext(), shared_name, keystore, key_alias, key);
 	}
 
 	public RNSharedPreferencesModule(ReactApplicationContext reactContext) {
@@ -56,56 +65,77 @@ public class RNSharedPreferencesModule extends ReactContextBaseJavaModule {
 		shared_name = name;
 	}
 
+	@ReactMethod
+	public void enableEncryption(String keystore, String key_alias, String key) {
+		this.keystore = keystore;
+		this.key_alias = key_alias;
+		this.key = key;
+	}
 
 	@ReactMethod
-		public void setItem(String key, String value) {
+	public void disableEncryption() {
+		this.encrypted = false;
 
-			initSharedHandler();
-			SharedDataProvider.putSharedValue(key,value);
+		this.keystore = null;
+		this.key_alias = null;
+		this.key = null;
+	}
 
-		}
 
 	@ReactMethod
-		public void getItem(String key, Callback successCallback){
+	public void setItem(String key, String value) {
 
+		initSharedHandler();
+		SharedDataProvider.putSharedValue(key,value);
+
+	}
+
+	@ReactMethod
+	public void getItem(String key, Callback successCallback){
+
+		if (encrypted && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+			initEncryptedHandler();
+		} else {
 			initSharedHandler();
-			String value = SharedDataProvider.getSharedValue(key);
-			successCallback.invoke(value);
-
 		}
+
+		String value = SharedDataProvider.getSharedValue(key);
+		successCallback.invoke(value);
+
+	}
 
 
 	/***
 	 * getItems(): returns Native Array of Preferences for the given values
 	 * */
 	@ReactMethod
-		    public void getItems(ReadableArray keys, Callback successCallback){
-			    initSharedHandler();
-			    String[] keysArray= new String[keys.size()];
-			    for (int i=0;i<keys.size();i++){
-				    keysArray[i]=keys.getString(i);
-			    }
-			    String[] [] values = SharedDataProvider.getMultiSharedValues(keysArray);
-			    WritableNativeArray data = new WritableNativeArray();
-			    for(int i=0;i<keys.size();i++){
-				    data.pushString(values[i][1]);
-			    }
-			    successCallback.invoke(data);
-		    }
+  public void getItems(ReadableArray keys, Callback successCallback){
+    initSharedHandler();
+    String[] keysArray= new String[keys.size()];
+    for (int i=0;i<keys.size();i++){
+	    keysArray[i]=keys.getString(i);
+    }
+    String[] [] values = SharedDataProvider.getMultiSharedValues(keysArray);
+    WritableNativeArray data = new WritableNativeArray();
+    for(int i=0;i<keys.size();i++){
+	    data.pushString(values[i][1]);
+    }
+    successCallback.invoke(data);
+  }
 
 	@ReactMethod
-		public void getAll(Callback successCallback){
-			initSharedHandler();
-			String[][] values = SharedDataProvider.getAllSharedValues();
-			WritableNativeArray data = new WritableNativeArray();
-			for(int i=0; i<values.length; i++){
-				WritableArray arr = new WritableNativeArray();
-				arr.pushString(values[i][0]);
-				arr.pushString(values[i][1]);
-				data.pushArray(arr);
-			}
-			successCallback.invoke(data);
+	public void getAll(Callback successCallback){
+		initSharedHandler();
+		String[][] values = SharedDataProvider.getAllSharedValues();
+		WritableNativeArray data = new WritableNativeArray();
+		for(int i=0; i<values.length; i++){
+			WritableArray arr = new WritableNativeArray();
+			arr.pushString(values[i][0]);
+			arr.pushString(values[i][1]);
+			data.pushArray(arr);
 		}
+		successCallback.invoke(data);
+	}
 
 	/*
 	   @ReactMethod
@@ -120,30 +150,30 @@ public class RNSharedPreferencesModule extends ReactContextBaseJavaModule {
 	 */
 
 	@ReactMethod
-		public void getAllKeys(Callback successCallback){
-			initSharedHandler();
-			String[] keys = SharedDataProvider.getAllKeys();
-			WritableNativeArray data = new WritableNativeArray();
-			for(int i=0; i<keys.length; i++){
-				data.pushString(keys[i]);
-			}
-			successCallback.invoke(data);
+	public void getAllKeys(Callback successCallback){
+		initSharedHandler();
+		String[] keys = SharedDataProvider.getAllKeys();
+		WritableNativeArray data = new WritableNativeArray();
+		for(int i=0; i<keys.length; i++){
+			data.pushString(keys[i]);
 		}
+		successCallback.invoke(data);
+	}
 
 
 
 	@ReactMethod
-		public void clear(){
-			initSharedHandler();
-			SharedDataProvider.clear();
-		}
+	public void clear(){
+		initSharedHandler();
+		SharedDataProvider.clear();
+	}
 
 
 	@ReactMethod
-		public void removeItem(String key) {
-			initSharedHandler();
-			SharedDataProvider.deleteSharedValue(key);
-		}
+	public void removeItem(String key) {
+		initSharedHandler();
+		SharedDataProvider.deleteSharedValue(key);
+	}
 
 
 }
