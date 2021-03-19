@@ -31,7 +31,6 @@ public class Encryptor {
     private String iv_key;
     private KeyStore keyStore;
     private Context context;
-    private ApplicationHelper helper;
     private static Encryptor mEncryptor;
 
     public Encryptor(String keystore_string, String key_alias) throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException, NoSuchProviderException, InvalidAlgorithmParameterException {
@@ -146,8 +145,8 @@ public class Encryptor {
         return keyStore.getKey(key_alias, null);
     }
 
-    private void setIVKey(String iv_key) {
-        this.iv_key = iv_key
+    public Encryptor setIVKey(String iv_key) {
+        this.iv_key = iv_key;
     }
 
     private void generateKey() throws KeyStoreException, NoSuchAlgorithmException, NoSuchProviderException, InvalidAlgorithmParameterException {
